@@ -55,42 +55,7 @@ while True:
     transcript_file_path_p2+= 1
 pair_lines = list(zip(client_lines_all,therapist_lines_all))
 
-# transcript_text = io.open(transcript_file_path, encoding='UTF-8').read().strip()
-# transcript_2_text = io.open(transcript_2_file_path, encoding='UTF-8').read().strip()
-# lines =  transcript_text.split('\n')
-# lines_2 =  transcript_2_text.split('\n')
-# # Each line in the file is one person speaking
-# # We assume the therapist always talks first
-
-# client_lines = [line for line_num, line in enumerate(lines, start=1) if line_num % 2 == 0]
-# therapist_lines = [line for line_num, line in enumerate(lines, start=1) if line_num % 2 != 0]
-
-# #Client leads conversation with empty token
-# client_lines.insert(0,u'[C]')
-
-# client_lines_2 = [line for line_num, line in enumerate(lines_2, start=1) if line_num % 2 == 0]
-# therapist_lines_2 = [line for line_num, line in enumerate(lines_2, start=1) if line_num % 2 != 0]
-
-# print(therapist_lines_2[0:3])
-# print(therapist_lines[0:3])
-
-#Client leads conversation with empty token
-# client_lines_2.insert(0,u'[C]')
-
-# client_lines = client_lines + client_lines_2
-# # client_lines.append(client_lines_2)
-# therapist_lines = therapist_lines + therapist_lines_2
-# therapist_lines.append(therapist_lines_2)
-
-# pair_lines = list(zip(client_lines,therapist_lines))
-# print (pair_lines)
-# for (c_Line, t_Line) in pair_lines[0:2]:
-#     print(c_Line,t_Line)
-
-
 #Now clean up each line
-
-
 ''' Converts the unicode file to ascii '''
 def unicode_to_ascii(s):
     return ''.join(c for c in unicodedata.normalize('NFD', s) if unicodedata.category(c) != 'Mn')
@@ -177,7 +142,7 @@ dataset = dataset.batch(BATCH_SIZE, drop_remainder = True)
 #We have already padded our inputs, no reason to do this now.
 
 #Next up is to create our encoder model.
-#If I remember correctly, we will have an embedding layer
+#We will have an embedding layer
 #This is fed an encoded (integer) input word
 #It then makes a prediction of the next word too?
 #Both are fed into the next layer?
@@ -447,63 +412,6 @@ def evaluate(sentence):
 
     return result,sentence
 
-
-
-
-
-
-
-
-# def evaluate( sentence):
-#     # Attention plot is the matrix relating how strongly a target word is related
-#     # to an input word -showing how much attention we should pay based on this relationship
-#     attention_plot = np.zeros((max_length_targ, max_length_inp))
-
-#     # Start and end tags and space correctly
-#     sentence = preprocess_sentence(sentence)
-
-#     # Convert sentence into array of tokens
-#     inputs = [client_tokenizer.word_index[i] for i in sentence.split(' ')]
-#     # Pad of course
-#     inputs = tf.keras.preprocessing.sequence.pad_sequences([inputs],
-#                                                             maxlen=max_length_inp,
-#                                                             padding='post')
-#     inputs = tf.convert_to_tensor(inputs)
-
-#     result = ''
-
-#     # Initial encoder state
-#     hidden = [tf.zeros((1, units))]
-
-#     # Apply encoder to the input, getting the final hidden state and a final encoded output
-#     enc_out, enc_hidden = encoder(inputs, hidden)
-
-#     #Initialise decoder state using encoder final state
-#     dec_hidden = enc_hidden
-
-#     # Create start tag as initial word seen by decoder
-#     dec_input = tf.expand_dims([therapist_tokenizer.word_index['<start>']], 0)
-
-#     for t in range(max_length_targ):
-#         predictions, dec_hidden, attention_weights = decoder(dec_input,
-#                                                             dec_hidden,
-#                                                             enc_out)
-
-#         # storing the attention weights to plot later on
-#         attention_weights = tf.reshape(attention_weights, (-1, ))
-#         attention_plot[t] = attention_weights.numpy()
-
-#         predicted_id = tf.argmax(predictions[0]).numpy()
-
-#         result += therapist_tokenizer.index_word[predicted_id] + ' '
-
-#         if therapist_tokenizer.index_word[predicted_id] == '<end>':
-#             return result, sentence, attention_plot
-
-#         # the predicted ID is fed back into the model
-#         dec_input = tf.expand_dims([predicted_id], 0)
-
-#     return result, sentence, attention_plot
 
 def chat( sentence):
     # result, sentence, attention_plot = evaluate(sentence)
